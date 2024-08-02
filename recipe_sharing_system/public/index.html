@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavourFusion</title>
+    <style>
+       body {
+    background: linear-gradient(
+        to bottom,
+        rgba(75, 75, 75, 0),
+        rgba(136, 135, 135, 0.7)
+    ), url(./images/recipe.jpg);
+    background-size: 100% ;
+    margin: 0;
+}
+
+        
+        * {
+            text-decoration: none;
+        }
+        
+        .navbar {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            padding-right: 5%;
+            padding-left: 5%;
+        }
+        
+        .navdiv {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            margin-top: 2%;
+        }
+        
+        .logo a {
+            font-size: 50px;
+            padding-top: 30px;
+            font-weight: 900;
+            color:rgb(151, 100, 37);
+        }
+        
+        li {
+            list-style: none;
+            display: inline-block;
+            margin: 10px;
+            font-weight: bolder;
+        }
+        
+        li a {
+            color: rgb(242, 95, 95);
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .container {
+            width: 100%;
+            padding: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15%;
+        }
+        
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(89, 90, 90, 0.2);
+            display: flex;
+            align-items: center;
+            border-radius: 60px;
+            padding: 0 20px;
+        }
+        
+        .search-bar input {
+            background: transparent;
+            flex: 1;
+            border: 0;
+            outline: none;
+            font-size: 20px;
+            padding: 10px;
+        }
+        
+        .search-bar button img {
+            width: 25px;
+        }
+        
+        search-bar button {
+            border: 0;
+            cursor: pointer;
+        }
+        
+        #error-message {
+            color: rgb(255, 3, 3);
+        }
+        
+        #icon-btn {
+            cursor: pointer;
+        }
+        
+        .recipe {
+            margin-bottom: 20px;
+            text-align: center; /* Center contents horizontally */
+        }
+        
+        h3 {
+            margin: 0;
+            font-size: 24px;
+            color: rgb(151, 100, 37);
+        }
+        
+        .bold-heading {
+            font-weight: bold;
+            color: rgb(28, 23, 23);
+            margin-top: 5px;
+        }
+        
+        p {
+            margin: 0;
+            font-size: 18px;
+            color: rgb(77, 74, 74);
+        }
+        
+        .recipe-container {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            border: 0.5px solid rgba(107, 106, 106, 0.7);
+            border-radius: 10px;
+            margin-left: 24%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .recipe-container img {
+            width: 140px;
+            height: 140px;
+            border-radius: 10px;
+        }
+        #abc{
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><a href="#">𝐹𝓁𝒶𝓋𝑜𝓊𝓇𝐹𝓊𝓈𝒾𝑜𝓃</a></div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="./about.html">About</a></li>
+                <li><a href="./upload_recipe.html">Upload</a></li>
+                <li><a href="./contact.html">Contact </a></li>
+                <li><a href="./login.html">Login</a></li>
+                <li><a href="./signup.html">Sign Up</a></li>
+                <li id="username-display"></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <form action="/search" method="get" class="search-bar">
+            <input type="text" placeholder="search recipes" id="recipeName"  name="recipeName" >
+            <p id="icon-btn">&#128269;</p>
+        </form>
+        <br>
+        <p id="error-message"></p>
+    </div>
+    
+    <div id="recipeContainer" class="recipe-container">
+      
+    </div>
+    <div id="abc">.</div>
+</body>
+<script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var username = urlParams.get('username');
+    if (username) {
+        document.getElementById("username-display").innerText = "Hello, " + username + "!";
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("icon-btn").addEventListener("click", function(event) {
+            event.preventDefault(); 
+            var recipeName = document.getElementById("recipeName").value.trim();
+            if (recipeName === "") {
+                document.getElementById("error-message").innerText = "Please enter the recipe name.";
+                return;
+            }
+
+            fetch('/search?recipeName=' + encodeURIComponent(recipeName))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Recipe not found');
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    displayRecipes(data);
+                })
+                .catch(error => {
+                    console.error('Error searching for recipe:', error.message);
+                    document.getElementById("error-message").innerText = error.message;
+                });
+        });
+
+        function displayRecipes(recipes) {
+            var recipeContainer = document.getElementById("recipeContainer");
+            recipeContainer.innerHTML = "";
+            recipeContainer.style.borderColor = "white";
+
+            recipes.forEach(recipe => {
+                var recipeDiv = document.createElement("div");
+                recipeDiv.classList.add("recipe");
+
+                var imageElement = document.createElement("img");
+                imageElement.src = recipe.img; 
+                imageElement.width = "300"; 
+                imageElement.height = "300";
+
+                var nameElement = document.createElement("h3");
+                nameElement.textContent = recipe.recipeName;
+
+                var ingredientsElement = document.createElement("p");
+                ingredientsElement.textContent = "𝗜𝗻𝗴𝗿𝗲𝗱𝗶𝗲𝗻𝘁𝘀📝:" + recipe.Ingredients;
+                ingredientsElement.classList.add("bold-heading");
+
+                var procedureElement = document.createElement("p");
+                procedureElement.textContent = "𝐏𝐫𝐨𝐜𝐞𝐝𝐮𝐫𝐞👩‍🍳: " + recipe.Procedure;
+                procedureElement.classList.add("bold-heading");
+
+                var tipsElement = document.createElement("p");
+                tipsElement.textContent = "𝗧𝗶𝗽𝘀📖: " + recipe.Tips;
+                tipsElement.classList.add("bold-heading");
+
+                recipeDiv.appendChild(imageElement);
+                recipeDiv.appendChild(nameElement);
+                recipeDiv.appendChild(ingredientsElement);
+                recipeDiv.appendChild(procedureElement);
+                recipeDiv.appendChild(tipsElement);
+
+                recipeContainer.appendChild(recipeDiv);
+            });
+        }
+    });
+</script>
+</html>

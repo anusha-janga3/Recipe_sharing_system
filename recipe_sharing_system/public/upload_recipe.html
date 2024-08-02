@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background: linear-gradient(
+                /* to bottom, */
+                rgba(75, 75, 75, 0),
+                rgba(107, 106, 106, 0.7)
+            ),url(./images/Screenshot\ 2024-02-14\ 224231.png);
+            height: 700px;
+        
+    }
+    h1{
+        text-align: center;
+        color:rgb(151, 100, 37);
+        font-size: 40px;
+    }
+    form{
+        align-items: center;
+    }
+    .new{
+        margin-left: 20%;
+        margin-right: 20%;
+        /* margin-top: 5%; */
+        /* border: 3px solid white;
+        border-radius: 10px; */
+        /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+        padding: 5%;
+        /* background-image: url(./images/Screenshot\ 2024-02-14\ 224231.png); */
+        
+       
+    }
+    label{
+        color: black;
+        font-size:x-large;
+        margin-right: 10%;
+    
+    }
+    input{
+        width: 350px;
+        height: 23px;
+    }
+    .enter{
+        display: flex;
+        padding: 2%;
+    }
+    .input {
+        padding: 2%;
+        border-radius: 20px;
+    }
+    .label{
+        padding: 2%;
+    }
+    textarea{
+        margin: 1%;
+        margin-bottom: 1%;
+    }
+    button {
+            background-color: rgb(251, 252, 252); 
+            color: rgb(151, 100, 37);
+            padding: 10px 20px; 
+            border-radius: 10%; 
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s;
+            margin-left: 40%;
+        }
+
+        button:hover {
+            background-color: rgb(217, 179, 132); 
+        }
+    
+</style>
+<body>
+    <h1>𝐸𝓃𝓉𝑒𝓇 𝓎𝑜𝓊𝓇 𝑅𝑒𝒸𝒾𝓅𝑒..</h1>
+    <div class="new">
+    <form action="/recipes" method="POST">
+        <!-- <label for="title">Title&nbsp;&nbsp;:</label>
+        <input type="text" id="recipeName" ><br><br>
+        <label for="ingredients">Ingredients&nbsp;&nbsp;:</label>
+        <input type="text" id="ingredients" ><br><br>
+        <label for="procedure">Procedure&nbsp;&nbsp;:</label>
+        <input type="text" id="procedure" ><br><br>
+        <label for="tips">Tips&nbsp;&nbsp;:</label>
+        <input type="text" id="tips" ><br><br> -->
+        <div class="enter">
+            <div class="label">
+                <label for="title" >Title&nbsp;&nbsp;</label><br><br>
+                <label for="ingredients" >Ingredients&nbsp;&nbsp;</label><br><br>
+                <label for="procedure" >Procedure&nbsp;&nbsp;</label><br><br><br><br><br><br><br><br><br>
+
+                <label for="tips" > Any Tips&nbsp;&nbsp;</label><br><br>
+                <label for="img" >Photo</label>
+            </div>
+            <div class="input">
+                <input type="text"  id="recipeName" name="recipeName" placeholder="enter your recipe title.."><br><br>
+                <input type="text" id="Ingredients" name="ingredients" placeholder="enter ingredients"><br><br>
+                <!-- <input type="text" id="procedure" ><br><br> -->
+                <textarea name="" cols="45" rows="10" id="Procedure" name="procedure" placeholder="enter procedure in points"></textarea>
+                <input type="text" id="Tips" name="tips" placeholder="tips...." ><br><br>
+                <input type="file"  id="file" name="image">
+            </div>
+            <p id="error-message"></p>
+        </div>
+        <button type="submit" id="btn">Upload</button>
+    </form>
+    </div>
+</body>
+<script>
+     document.getElementById("btn").addEventListener("click", function(event) {
+    event.preventDefault(); 
+
+    var recipeName = document.getElementById("recipeName").value;
+    var ingredients = document.getElementById("Ingredients").value;
+    var procedure = document.getElementById("Procedure").value;
+    var tips = document.getElementById("Tips").value;
+    const imageFile = document.getElementById("file").files[0];
+
+    if (recipeName.trim() === "" || ingredients.trim() === "" || procedure.trim() === "" ) {
+        document.getElementById("error-message").innerText = "Please enter all details..";
+        return;
+    }
+    if (!imageFile) {
+        console.error('Image file is required');
+        return;
+    }
+
+
+    const formData = new FormData();
+    formData.append('recipeName', recipeName);
+    formData.append('ingredients', ingredients);
+    formData.append('procedure', procedure);
+    formData.append('tips', tips);
+    formData.append('image', imageFile);
+
+    fetch('/recipes', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(message => {
+        console.log(message);
+        if (message === "Recipe added successfully") {
+            window.location.href = "index.html"; 
+        } else {
+            document.getElementById("error-message").innerText = message; 
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("error-message").innerText = "Error while uploading.. Please try again.";
+    });
+});
+
+</script>
+</html>

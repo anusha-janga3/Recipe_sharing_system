@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body{
+            background: linear-gradient(
+                /* to bottom, */
+                rgba(75, 75, 75, 0),
+                rgba(107, 106, 106, 0.7)
+            ),url(./images/Screenshot\ 2024-02-14\ 224231.png);
+            height: 600px;
+        }
+        #div1{
+            width: 40%;
+            margin-left: 10%;
+            margin-right: 60%;
+            margin-top: 7%;
+        
+            background-color: whitesmoke;
+            border-radius: 10px;
+            box-shadow: 2px 2px rgb(216, 214, 214); 
+            padding: 4%;
+            flex: 1;
+           
+            margin-right: 5%;
+        }
+        input[type=text]{
+            height: 25px;
+            width: 100%;
+        }
+        input[type=password]{
+            height: 25px;
+            width: 100%;
+        }
+        button{
+            color: white;
+            background-color: tomato;
+            height: 29px;
+            width: 100%;
+            border-radius: 3px;
+            border: none;
+        }
+        button:hover{
+            background-color: rgb(244, 166, 152);
+            cursor: pointer;
+        }
+        #d{
+            text-align: center;
+        }
+        b{
+            cursor: pointer;
+        }
+        @media only screen and (max-width:500px){
+            #div1{
+                margin-left: 10%;
+                margin-left: 10%;
+                width: 60%;
+                margin-top: 55%;
+                padding: 9%;
+            }
+
+        }
+        #main{
+            display: flex;
+        }
+       #sub{
+        flex: 1;
+        margin-top: 17%;
+        
+       }
+       b{
+        color: blue;
+       }
+       p{
+        text-align: center;
+       }
+       h2{
+       
+            text-align: center;
+            color: blueviolet;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            font-size: 30px;
+            
+        
+       }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div id="div1">
+            <h2>𝐿𝑜𝑔𝒾𝓃</h2> 
+            <br>
+            <form id="login-form" action="/login" method="POST">
+                <label for="username">Username</label>
+                <br>
+                <input type="text" id="username"  name="user" ><br><br>
+                <label for="password">Password</label><br>
+                <input type="password" id="password"  name="pass" ><br><br>
+                <br><br>
+                <button id="login-btn">Login</button>
+                <br><br>
+            </form>
+            <p>Don't have an account ?<b onclick="window.location.href='signup.html'">sign up</b></p>
+            <p id="error-message"></p>
+        </div>
+        <div id="sub">
+            <img src="./images/little-chef-baby (2).gif" alt="">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("login-btn").addEventListener("click", function(event) {
+            event.preventDefault(); 
+            
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            if (username.trim() === "" || password.trim() === "") {
+                document.getElementById("error-message").innerText = "Please enter both username and password.";
+                return;
+            }
+            
+            const formData = {
+                user: username,
+                pass: password
+            };
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.text())
+            .then(message => {
+                console.log(message);
+                if (message === "Login Successful") {
+                    window.location.href = "index.html?username=" + encodeURIComponent(username);
+                } else {
+                    document.getElementById("error-message").innerText = message; 
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("error-message").innerText = "Error logging in. Please try again.";
+            });
+        });
+    </script>
+</body>
+</html>

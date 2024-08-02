@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+    <div id="div1">
+        <h2>SIGN UP</h2>
+        <br>
+        <label for="username">Name</label>
+        <br>
+        <input type="text" id="username"><br><br>
+        <label for="password">Password</label><br>
+        <input type="password" id="password"><br><br>
+        <br><br>
+        <button id="signup-btn">Create</button>
+        <br>
+    </div>
+
+    <script>
+        document.getElementById("signup-btn").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the username and password from the input fields
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // Create a data object to send to the backend
+            var data = {
+                username: username,
+                password: password
+            };
+
+            // Send a POST request to the backend
+            fetch("/signin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If the request was successful, redirect to the home page
+                    window.location.href = "home.html";
+                } else {
+                   
+                    throw new Error('Error signing up.');
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert(error.message);
+            });
+        });
+    </script>
+</body>
+</html>
